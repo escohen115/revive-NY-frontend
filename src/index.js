@@ -1,10 +1,19 @@
-const businessesURL = "http://localhost:3000/api/v1/businesses"
+const baseUrl = "http://localhost:3000/api/v1"
+const businessesURL = `${baseUrl}/businesses`
+const investmentsUrl = `${baseUrl}/investments`
 const businessInfoDiv = document.querySelector('div#business-info')
+const statsDiv = document.querySelector('div#fundraising-stats')
 
 let fetchAllBusinesses = (url) => {
     fetch(url)
     .then(r => r.json())
     .then(data => data.forEach(renderBusinessToInfoDiv))
+}
+
+let fetchInvestmentData = (url) => {
+    fetch(url)
+    .then(r => r.json())
+    .then(data => console.log(data))
 }
 
 let renderBusinessToInfoDiv = (business) => {
@@ -30,3 +39,4 @@ let renderBusinessToInfoDiv = (business) => {
 }
 
 fetchAllBusinesses(businessesURL)
+fetchInvestmentData(investmentsUrl)
