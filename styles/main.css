@@ -20,3 +20,7 @@ header {
   color: white;
   background-color: firebrick;
 }
+
+img {
+  width: 20%;
+}
