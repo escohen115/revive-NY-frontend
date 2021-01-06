@@ -1,6 +1,7 @@
 const baseUrl = "http://localhost:3000/api/v1"
 const businessesURL = `${baseUrl}/businesses`
 const investmentsUrl = `${baseUrl}/investments`
+const userUrl = `${baseUrl}/users`
 const businessInfoDiv = document.querySelector('div#business-info')
 const statsDiv = document.querySelector('div#fundraising-stats')
 const moreBizBtn = document.querySelector('button#more-biz-btn')
@@ -9,9 +10,16 @@ const signUpButton = document.querySelector('li#sign-up')
 const lendLi = document.querySelector('li#lend')
 const signInButton = document.querySelector('li#sign-in')
 const allBizDiv = document.querySelector('div#all-biz-div')
-let signUpForm = document.querySelector("#sign-up-form")
+const investmentsLi = document.querySelector('li#investments')
+const signOutButton = document.querySelector("li#sign-out");
+const signUpForm = document.querySelector("#sign-up-form")
+const projectDescription = document.querySelector("#project-description");
 
 let currentUser = {}
+
+let numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 let showPageFromListener = (event) => {
     
@@ -28,13 +36,20 @@ let showPageFromListener = (event) => {
 
 }
 
+let fetchUserInvestments = () => {
+
+    fetch(`${userUrl}/investments`)
+        .then(r => r.json())
+        .then(investments => console.log(investments))
+}
+
 let fetch5Businesses = (url) => {
     fetch(url)
     .then(r => r.json())
     .then(data => (data.slice(0, 5)).forEach(renderBusinessToInfoDiv))
 }
 
-let fetchInvestmentData = (url) => {
+let fetchTotalInvestmentData = (url) => {
     fetch(url)
     .then(r => r.json())
     .then(data => console.log(data))
@@ -42,7 +57,9 @@ let fetchInvestmentData = (url) => {
 
 
 let renderBusinessToInfoDiv = (business) => {
+
     // debugger 
+    toggleOff(investmentsLi)
     let oneBizDiv = document.createElement('div')
     oneBizDiv.dataset.id = business.id
 
@@ -89,16 +106,19 @@ let renderBusinessPage = (business) =>
     // showDiv.append(name)
     // showDiv.append(picture)
 
-    showDiv.innerHTML = `<div id="show-image"> 
+    showDiv.innerHTML = 
+    `<div id="show-image"> 
         <img  id="profile-image" src=${business.picture} alt=${business.name}>
     </div> 
     <div id="progress-status">
+        <h2>$${numberWithCommas(business.goal)} Goal</h2>
         <h3>${Math.round(business.percentFunded)} Percent funded<h3>
-        <div id='progress-bar'> </div> 
+        <div id='progress-bar'> </div>
+        <h4>$${numberWithCommas(business.moneyMade)} raised</h4>
     </div> 
     <div id="invest"> 
         <h2>${business.name}</h2>
-        <h3>${business.industry}</h3>
+        <h3>Industry: ${business.industry}</h3>
         
         <div id='pledge-form-div'>
         </div>
@@ -224,9 +244,17 @@ moreBizBtn.addEventListener('click', evt => {
     // fetch(`${businessesURL}`)
     // .then(response => response.json())
     // .then(businesses => businesses.forEach(renderAllBusinesses))
+    if (allBizDiv.children.length > 0 && allBizDiv.style.display === 'none') {
+        toggleOn(allBizDiv)
+    } 
+    else if (allBizDiv.children.length > 0) {
+        alert('No more businesses to view!')
+    }
+    else {        
     fetchAllBusinesses()
+    }
 
-    toggleOff(moreBizBtn)
+    // toggleOff(moreBizBtn)
     
 })
 
@@ -240,13 +268,12 @@ let fetchAllBusinesses = () => {
 
 // showMore
 
-signUpButton.addEventListener('click', event => {
-    
-    toggleOff(businessInfoDiv)
-    toggleOff(signUpButton)
-    
-    showDiv.innerHTML =
-    `<form data-id="${2}" id="sign-up-form">
+signUpButton.addEventListener("click", (event) => {
+  toggleOff(businessInfoDiv);
+  toggleOff(signUpButton);
+  toggleOn(signInButton);
+
+  showDiv.innerHTML = `<form data-id="${2}" id="sign-up-form">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name"><br>
 
@@ -254,109 +281,169 @@ signUpButton.addEventListener('click', event => {
         <input type="text" id="email" name="email"><br>
 
         <button type="submit" value = "submit">Create an Account</button>
-    </form>`
-    
-    let signUpForm = document.querySelector('#sign-up-form')
-    signUpForm.addEventListener('submit', event => {
-    event.preventDefault()
-        
-    let userObj = 
-    {
-        name: event.target.name.value,
-        email: event.target.email.value
-    }
+    </form>`;
 
-    let confObj = 
-    {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json', 
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userObj)
-    }
+  let signUpForm = document.querySelector("#sign-up-form");
+  signUpForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let userObj = {
+      name: event.target.name.value,
+      email: event.target.email.value,
+    };
+
+    let confObj = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userObj),
+    };
 
     fetch(`${baseUrl}/users`, confObj)
       .then((response) => response.json())
       .then((data) => {
-          currentUser = data
-          alert(`hello ${data.name}! thanks for signing up!`)
-          toggleOn(businessInfoDiv);
-          toggleOff(pledgeFormDiv)
-      })
-    
-    })
-})
-
-signInButton.addEventListener("click", function (event) {
-  console.log("click")
-   event.preventDefault();
-
-   toggleOff(businessInfoDiv);
-   toggleOff(signUpButton);
-
-   showDiv.innerHTML = 
-   `<form id="sign-in-form">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name"><br>
-
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-
-        <button type="submit" value = "submit">Sign In</button>
-    </form>`;
-
-   let signInForm = document.querySelector("#sign-in-form");
-   signInForm.addEventListener("submit", (event) => {
-     event.preventDefault();
-
-     let userObj = {
-       name: event.target.name.value,
-       email: event.target.email.value,
-     };
-
-     let confObj = {
-       method: "POST",
-       headers: {
-         Accept: "application/json",
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify(userObj),
-     };
-
-    fetch(`${baseUrl}/users/sign_in`, confObj)
-       .then(response => {response.json()})
-       .then(data => {
-            currentUser = data;
-       });
-   });
-   if (currentUser.id > 0){
-        alert(`hello ${currentUser.name}! thanks for signing in!`);
-        toggleOff(signInButton);
-        toggleOn(businessInfoDiv);
-    }
-   else
-   {
-       alert('email taken')
-   }
+        currentUser = data;
+        if (currentUser.status != 422) {
+            alert(`hello ${currentUser.name}! thanks for signing up!`);
+            toggleOff(signInButton);
+            toggleOn(businessInfoDiv);
+            toggleOn(investmentsLi);
+            toggleOff(showDiv);
+            toggleOn(businessInfoDiv);
+            toggleOff(pledgeFormDiv);
+            toggleOff(showDiv); 
+        }
+        else 
+        {
+          alert("email taken");
+        }
+      });
+  });
 });
 
-lendLi.addEventListener('click', evt => {
+signInButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    toggleOn(signUpButton)
+    toggleOff(signInButton);
+    toggleOff(businessInfoDiv);
     
-    if (allBizDiv.children) {
-        toggleOn(allBizDiv)
-    }
-    else {
-        // debugger 
-        fetchAllBusinesses()
-    }
 
+    showDiv.innerHTML = 
+    `<form id="sign-in-form">
+
+            <label for="email">Email:</label><br>
+            <input type="text" id="email" name="email"><br>
+
+            <button type="submit" value = "submit">Sign In</button>
+
+    </form>`;
+
+    let signInForm = document.querySelector("#sign-in-form");
+    signInForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let userObj = {
+    name: event.target.name.value,
+    email: event.target.email.value,
+    };
+
+    let confObj = {
+    method: "POST",
+    headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userObj),
+    };
+
+    fetch(`${baseUrl}/users/sign_in`, confObj)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        currentUser = data;
+        alert(`hello ${currentUser.name}! thanks for signing in!`);
+        toggleOff(signInButton);
+        toggleOff(signUpButton);
+        toggleOn(businessInfoDiv);
+        toggleOn(signOutButton);
+        toggleOn(investmentsLi)
+        toggleOff(signInForm)
+        toggleOff(showDiv)
+      });
+});
+});
+
+    lendLi.addEventListener('click', evt => {
+        
+        if (allBizDiv.children.length > 0) {
+            toggleOn(allBizDiv)
+            toggleOff(businessInfoDiv)
+        }
+        else {
+            toggleOff(showDiv)
+            fetchAllBusinesses()
+            toggleOn(allBizDiv)
+        }
+
+})
+
+investmentsLi.addEventListener('click', event => {
+  toggleOff(projectDescription);
+  toggleOff(businessInfoDiv);
+  toggleOn(showDiv);
+  h2 = document.createElement("h2");
+  h2.textContent = "My Investments:";
+
+  ul = document.createElement("ul");
+  h2.append(ul)
+
+  showDiv.append(h2);
+  fetchUserInvestments();
+
+  currentUser.investments.forEach((investment) =>
+    renderOneInvestment(investment)
+  );
+
+  function renderOneInvestment(investment) {
+    li = document.createElement("li");
+
+    
+
+
+
+    li.textContent = `${investment.amount}`;
+
+    
+
+
+
+    ul.append(li);
+  }
+})
+
+signOutButton.addEventListener('click', event => {
+    currentUser = {}
+
+    alert("Signing out...")
+    
+    toggleOff(signOutButton)
+    toggleOn(signInButton)
+    toggleOn(signUpButton)
+    toggleOff(investmentsLi)
 })
 
 
 
+
+
+
+toggleOff(signOutButton);
+toggleOff(investmentsLi)
+
 fetch5Businesses(businessesURL);
-fetchInvestmentData(investmentsUrl);
+// fetchTotalInvestmentData(investmentsUrl);
 
 
 
