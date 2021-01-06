@@ -79,6 +79,7 @@ let renderBusinessPage = (business) =>
 {
     
     toggleOn(showDiv)
+    toggleOff(allBizDiv)
 
     // let name = document.createElement('h1')
     // name.textContent = business.name
@@ -199,9 +200,9 @@ let renderAllBusinesses = (business) => {
 
     allBizDiv.innerHTML += 
     `<div data-id=${business.id}>
-        <div>
+        <div data-id=${business.id}>
             <img src=${business.picture} alt=${business.name}>
-        <div>  
+        </div>  
         <h4>${business.name}</h4>
         <p>${business.description}</p>
         <button class="learn_more">Learn More</button>
@@ -226,7 +227,7 @@ moreBizBtn.addEventListener('click', evt => {
     .then(response => response.json())
     .then(businesses => businesses.forEach(renderAllBusinesses))
     
-    // toggleOff(moreBizBtn)
+    toggleOff(moreBizBtn)
     
 })
 
