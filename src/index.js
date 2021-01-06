@@ -164,24 +164,31 @@ let renderBusinessPage = (business) =>
               event.preventDefault();
 
               let id = event.target.dataset.id;
+            if (event.target.pledge.value == 0) {
+                alert('Amount must be more than zero!')
+            }
+            else  {
+                alert('Thank you for your donation!')
+                let investmentObj = {
+                    amount: event.target.pledge.value,
+                    business_id: id,
+                    user_id: currentUser.id,
+                    description: event.target.description.value,
+                };
 
-              let investmentObj = {
-                amount: event.target.pledge.value,
-                business_id: id,
-                user_id: currentUser.id,
-                description: event.target.description.value,
-              };
-
-              let confObj = {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(investmentObj),
-              };
-
+                let confObj = {
+                    method: "POST",
+                    headers: {
+                    Accept: "application/json",
+                     "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(investmentObj),
+                };
+            
+            
               fetch(`${investmentsUrl}`, confObj);
+            }
+            event.target.reset()
             });    
 
     } 
@@ -273,7 +280,8 @@ signUpButton.addEventListener("click", (event) => {
   toggleOff(signUpButton);
   toggleOn(signInButton);
 
-  showDiv.innerHTML = `<form data-id="${2}" id="sign-up-form">
+  showDiv.innerHTML = 
+  `<form data-id="${2}" id="sign-up-form">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name"><br>
 
@@ -324,7 +332,6 @@ signUpButton.addEventListener("click", (event) => {
 });
 
 signInButton.addEventListener("click", function (event) {
-    event.preventDefault();
     toggleOn(signUpButton)
     toggleOff(signInButton);
     toggleOff(businessInfoDiv);
@@ -375,52 +382,64 @@ signInButton.addEventListener("click", function (event) {
 });
 });
 
-    lendLi.addEventListener('click', evt => {
+lendLi.addEventListener('click', evt => {
+
+    toggleOn(signInButton)
+    toggleOn(signUpButton)
         
-        if (allBizDiv.children.length > 0) {
-            toggleOn(allBizDiv)
-            toggleOff(businessInfoDiv)
-        }
-        else {
-            toggleOff(showDiv)
-            fetchAllBusinesses()
-            toggleOn(allBizDiv)
-        }
+    if (allBizDiv.children.length > 0) {
+        toggleOn(allBizDiv)
+        toggleOff(businessInfoDiv)
+    }
+    else 
+    {
+        toggleOff(showDiv)
+        fetchAllBusinesses()
+        toggleOn(allBizDiv)
+    }
 
 })
 
-investmentsLi.addEventListener('click', event => {
-  toggleOff(projectDescription);
-  toggleOff(businessInfoDiv);
-  toggleOn(showDiv);
-  h2 = document.createElement("h2");
-  h2.textContent = "My Investments:";
+let renderOneInvestment = (investment) => {
 
-  ul = document.createElement("ul");
-  h2.append(ul)
 
-  showDiv.append(h2);
-  fetchUserInvestments();
-
-  currentUser.investments.forEach((investment) =>
-    renderOneInvestment(investment)
-  );
-
-  function renderOneInvestment(investment) {
-    li = document.createElement("li");
-
+    newDiv = document.createElement('div')
+    newDiv.innerHTML = 
     
+    `<form id=${investment.id}>
 
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" value=${investment.amount}><br>
+        
+        <label for="description>Description:</label>
+        <input type="text" name="description" value=${investment.description}>
+        
+        <button type="submit" value="submit">Update</button>
 
+    </form>`
 
-    li.textContent = `${investment.amount}`;
-
+    investmentsDiv.append(newDiv)
     
+}
+
+investmentsLi.addEventListener("click", (event) => {
+    showDiv.innerHTML = ''
+    toggleOff(projectDescription);
+    toggleOff(businessInfoDiv);
+    toggleOff(investmentsLi)
+    toggleOn(showDiv);
+    
+    h2 = document.createElement("h2");
+    h2.textContent = "My Investments:";
+
+    investmentsDiv = document.createElement('div')
+
+    showDiv.append(h2, investmentsDiv);
 
 
+//   fetchUserInvestments();
+    currentUser.investments.forEach(renderOneInvestment)
 
-    ul.append(li);
-  }
 })
 
 signOutButton.addEventListener('click', event => {
@@ -435,11 +454,14 @@ signOutButton.addEventListener('click', event => {
 })
 
 
+let deleteBtn = document.createElement('button')
+    deleteBtn.id = 'delete-user'
+    deleteBtn.textContent = 'Delete your account'
 
 
+// deleteBtn.addEventListener('click', evt )
 
-
-toggleOff(signOutButton);
+toggleOff(signOutButton)
 toggleOff(investmentsLi)
 
 fetch5Businesses(businessesURL);
