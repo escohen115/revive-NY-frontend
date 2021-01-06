@@ -7,7 +7,7 @@ const moreBizBtn = document.querySelector('button#more-biz-btn')
 const showDiv = document.querySelector('div#show-div')
 const signUpButton = document.querySelector('button#sign-up')
 const mockUserId = 25
-// const current_user 
+const current_user = 0
 
 
 let fetchAllBusinesses = (url) => {
@@ -98,7 +98,7 @@ let renderBusinessPage = (business) =>
             <input type="text" id="name" name="name"><br>
 
             <label for="pledge">Pledge:</label><br>
-            <input type="text" id="pledge" name="pledge">
+            <input type="text" id="pledge" name="pledge"><br>
 
             <label for="description">Description:</label><br>
             <input type="text" id="description" name="description">
