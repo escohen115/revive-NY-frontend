@@ -5,9 +5,15 @@ const businessInfoDiv = document.querySelector('div#business-info')
 const statsDiv = document.querySelector('div#fundraising-stats')
 const moreBizBtn = document.querySelector('button#more-biz-btn')
 const showDiv = document.querySelector('div#show-div')
-const signUpButton = document.querySelector('button#sign-up')
+const signUpButton = document.querySelector('li#sign-up')
+const lendLi = document.querySelector('li#lend')
+const signInButton = document.querySelector('li#sign-in')
+const allBizDiv = document.querySelector('div#all-biz-div')
+let signUpForm = document.querySelector("#sign-up-form")
+
+
 const mockUserId = 25
-// const current_user 
+let currentUserId = 0
 
 
 let fetchAllBusinesses = (url) => {
@@ -28,7 +34,6 @@ let renderBusinessToInfoDiv = (business) => {
     let oneBizDiv = document.createElement('div')
     oneBizDiv.dataset.id = business.id
 
-    // toggleDisplay(showDiv)
 
     imgDiv = document.createElement('div')
     
@@ -55,20 +60,25 @@ businessInfoDiv.addEventListener('click', event => {
 
     if (event.target.matches('.learn_more')) 
     {
-        let id = event.target.closest('div').dataset.id
-        
-        fetch(`${businessesURL}/${id}`)
-        .then(response => response.json())
-        .then(business => renderBusinessPage(business))
+        toggleOff(businessInfoDiv);
+      let id = event.target.closest("div").dataset.id;
+
+      fetch(`${businessesURL}/${id}`)
+        .then((response) => response.json())
+        .then((business) => renderBusinessPage(business));
     }
 
 })
 
+let showPagefromListener = (event) => {
+    
+}
+
 
 let renderBusinessPage = (business) => 
 {
-    toggleDisplay(businessInfoDiv)
-    toggleDisplay(moreBizBtn)
+    
+    toggleOn(showDiv)
 
     // let name = document.createElement('h1')
     // name.textContent = business.name
@@ -80,8 +90,7 @@ let renderBusinessPage = (business) =>
     // showDiv.append(name)
     // showDiv.append(picture)
 
-    showDiv.innerHTML =
-    `<div id="show-image"> 
+    showDiv.innerHTML = `<div id="show-image"> 
         <img  id="profile-image" src=${business.picture} alt=${business.name}>
     </div> 
     <div id="progress-status">
@@ -91,20 +100,10 @@ let renderBusinessPage = (business) =>
     <div id="invest"> 
         <h2>${business.name}</h2>
         <h3>${business.industry}</h3>
-        <h4>Make A Pledge</h4>
-        <form data-id="${business.id}" id="pledge-form">
-
-            <label for="name">Name:</label><br>
-            <input type="text" id="name" name="name"><br>
-
-            <label for="pledge">Pledge:</label><br>
-            <input type="text" id="pledge" name="pledge">
-
-            <label for="description">Description:</label><br>
-            <input type="text" id="description" name="description">
-
-            <button type="submit" value = "Submit">Submit</button>
-        </form>
+        
+        <div id='pledge-form-div'>
+        </div>
+        
     </div> 
     <div id="description">
         <h4>${business.name}'s story</h4>
@@ -120,7 +119,55 @@ let renderBusinessPage = (business) =>
             <li> ${business.website} </li>
         </ul>
     </div>`
-    
+
+    if (currentUserId > 0)
+    {
+        let pledgeFormDiv = document.querySelector('#pledge-form-div')
+            pledgeFormDiv.innerHTML = 
+            `
+            <h4>Make A Pledge</h4>
+            <form data-id="${business.id}" id="pledge-form">
+
+                <label for="description">Description:</label><br>
+                <input type="text" id="description" name="description"><br>
+
+                <label for="pledge">Lend:</label><br>
+                <input type="text" id="pledge" name="pledge"><br>
+
+
+                <button type="submit" value = "Submit">Pledge</button>
+
+            </form>
+            `
+            const pledgeForm = document.querySelector("#pledge-form");
+
+            pledgeForm.addEventListener("submit", (event) => {
+              event.preventDefault();
+
+              let id = event.target.dataset.id;
+
+              let investmentObj = {
+                amount: event.target.pledge.value,
+                business_id: id,
+                user_id: currentUserId,
+                description: event.target.description.value,
+              };
+
+              let confObj = {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(investmentObj),
+              };
+
+              fetch(`${investmentsUrl}`, confObj);
+            });    
+
+    } 
+
+
     const progressBar = document.querySelector('div#progress-bar')
     
     if (business.percentFunded < 100) {
@@ -129,58 +176,65 @@ let renderBusinessPage = (business) =>
         progressBar.style.width = "100%"
     }
 
-    const pledgeForm = document.querySelector('#pledge-form')
     
-    pledgeForm.addEventListener('submit', event => {
-        
-        event.preventDefault()
-
-        let id = event.target.dataset.id
-
-
-        let investmentObj = 
-        {
-            amount: event.target.pledge.value,
-            business_id: id,
-            user_id: mockUserId,
-            description: event.target.description.value
-
-        }
-
-        let confObj = 
-        {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json', 
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(investmentObj)
-        }
-        
-        fetch(`${investmentsUrl}`, confObj)
-
-    } )    
     
 }
 
-let toggleDisplay = (element) => {
-    if (element.style.display === 'none') {
+let toggleOn = (element) => {
+    if (element === showDiv) {
+        element.style.display = 'grid'
+    }
+    else {
         element.style.display = 'block'
-    } else {
-        element.style.display = 'none'
     }
 }
 
+let toggleOff  = (element) => {
+    element.style.display = 'none'
+}
+
+let renderAllBusinesses = (business) => {
+
+    toggleOff(businessInfoDiv)
+
+    allBizDiv.innerHTML += 
+    `<div data-id=${business.id}>
+        <div>
+            <img src=${business.picture} alt=${business.name}>
+        <div>  
+        <h4>${business.name}</h4>
+        <p>${business.description}</p>
+        <button class="learn_more">Learn More</button>
+    </div>
+    `
+
+    let learnMoreBtn = document.querySelector('button.learn_more')
+    
+    // learnMoreBtn.addEventListener()
+}
+
+        
 moreBizBtn.addEventListener('click', evt => {
+    toggleOn(businessInfoDiv)
+    toggleOff(showDiv)
+    toggleOff(signUpForm)
+
     fetch(`${businessesURL}`)
     .then(response => response.json())
-    .then(businesses => businesses.slice(5).forEach(renderBusinessToInfoDiv))
+    .then(businesses => businesses.forEach(renderAllBusinesses))
+    
+    // toggleOff(moreBizBtn)
     
 })
 
+// showMore
+
 signUpButton.addEventListener('click', event => {
-    event.preventDefault
-    toggleDisplay(businessInfoDiv)
+    event.preventDefault()
+    
+    toggleOff(businessInfoDiv)
+    toggleOff(signUpButton)
+    
     showDiv.innerHTML =
     `<form data-id="${2}" id="sign-up-form">
         <label for="name">Name:</label><br>
@@ -194,6 +248,7 @@ signUpButton.addEventListener('click', event => {
     
     let signUpForm = document.querySelector('#sign-up-form')
     signUpForm.addEventListener('submit', event => {
+    event.preventDefault()
         
     let userObj = 
     {
@@ -212,17 +267,71 @@ signUpButton.addEventListener('click', event => {
     }
 
     fetch(`${baseUrl}/users`, confObj)
-    
-    // .then(response => response.json())
-    // .then(data => {
-    //     current_user = data
-    // })
+      .then((response) => response.json())
+      .then((data) => {
+          currentUserId = data.id
+          alert(`hello ${data.name}! thanks for signing up!`)
+          toggleOn(businessInfoDiv);
+          toggleOff(pledgeFormDiv)
+      })
     
     })
 })
-    
 
-fetchAllBusinesses(businessesURL)
-fetchInvestmentData(investmentsUrl)
+signInButton.addEventListener("click", function (event) {
+  console.log("click")
+   event.preventDefault();
+
+   toggleOff(businessInfoDiv);
+   toggleOff(signUpButton);
+
+   showDiv.innerHTML = 
+   `<form id="sign-in-form">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+
+        <button type="submit" value = "submit">Sign In</button>
+    </form>`;
+
+   let signInForm = document.querySelector("#sign-in-form");
+   signInForm.addEventListener("submit", (event) => {
+     event.preventDefault();
+
+     let userObj = {
+       name: event.target.name.value,
+       email: event.target.email.value,
+     };
+
+     let confObj = {
+       method: "POST",
+       headers: {
+         Accept: "application/json",
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(userObj),
+     };
+        fetch(`${baseUrl}/users`, confObj)
+       .then((response) => response.json())
+       .then((data) => {
+         currentUserId = data.id;
+
+         alert(`hello ${data.name}! thanks for signing in!`);
+         toggleOn(businessInfoDiv);
+         toggleOff(pledgeFormDiv);
+       });
+   });
+});
+
+// lendLi.addEventListener('click', )
+
+fetchAllBusinesses(businessesURL);
+fetchInvestmentData(investmentsUrl);
+
+
+
+
 
 

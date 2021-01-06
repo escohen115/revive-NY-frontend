@@ -22,6 +22,7 @@
 
 
 Completed: 
+
 CREATE
 1. Create action for an investment
 2. Create action for a user
@@ -40,5 +41,10 @@ UPDATE
 DELETE 
 1. Delete account 
 
+
+CSS
+1. Create another div that houses the progress bar so that you can make the width grey 
+
+2. 
 
 
