@@ -179,6 +179,7 @@ moreBizBtn.addEventListener('click', evt => {
 })
 
 signUpButton.addEventListener('click', event => {
+    event.preventDefault
     toggleDisplay(businessInfoDiv)
     showDiv.innerHTML =
     `<form data-id="${2}" id="sign-up-form">
