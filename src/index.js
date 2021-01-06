@@ -15,6 +15,20 @@ let signUpForm = document.querySelector("#sign-up-form")
 const mockUserId = 25
 let currentUserId = 0
 
+let showPageFromListener = (event) => {
+    
+    // debugger 
+    if (event.target.matches('button.learn_more')) 
+    {
+        toggleOff(businessInfoDiv);
+      let id = event.target.closest("div").dataset.id;
+
+      fetch(`${businessesURL}/${id}`)
+        .then((response) => response.json())
+        .then((business) => renderBusinessPage(business));
+    }
+
+}
 
 let fetchAllBusinesses = (url) => {
     fetch(url)
@@ -56,23 +70,9 @@ let renderBusinessToInfoDiv = (business) => {
     businessInfoDiv.append(oneBizDiv)
 }
 
-businessInfoDiv.addEventListener('click', event => {
+businessInfoDiv.addEventListener('click', showPageFromListener)
 
-    if (event.target.matches('.learn_more')) 
-    {
-        toggleOff(businessInfoDiv);
-      let id = event.target.closest("div").dataset.id;
 
-      fetch(`${businessesURL}/${id}`)
-        .then((response) => response.json())
-        .then((business) => renderBusinessPage(business));
-    }
-
-})
-
-let showPagefromListener = (event) => {
-    
-}
 
 
 let renderBusinessPage = (business) => 
@@ -209,9 +209,12 @@ let renderAllBusinesses = (business) => {
     `
 
     let learnMoreBtn = document.querySelector('button.learn_more')
-    
-    // learnMoreBtn.addEventListener()
+    // debugger 
+
+    // learnMoreBtn.addEventListener('click', () => console.log('clicked'))
 }
+
+allBizDiv.addEventListener('click', showPageFromListener)
 
         
 moreBizBtn.addEventListener('click', evt => {
@@ -320,7 +323,6 @@ signInButton.addEventListener("click", function (event) {
 
          alert(`hello ${data.name}! thanks for signing in!`);
          toggleOn(businessInfoDiv);
-         toggleOff(pledgeFormDiv);
        });
    });
 });
