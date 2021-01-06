@@ -11,9 +11,7 @@ const signInButton = document.querySelector('li#sign-in')
 const allBizDiv = document.querySelector('div#all-biz-div')
 let signUpForm = document.querySelector("#sign-up-form")
 
-
-const mockUserId = 25
-let currentUserId = 0
+let currentUser = {}
 
 let showPageFromListener = (event) => {
     
@@ -30,7 +28,7 @@ let showPageFromListener = (event) => {
 
 }
 
-let fetchAllBusinesses = (url) => {
+let fetch5Businesses = (url) => {
     fetch(url)
     .then(r => r.json())
     .then(data => (data.slice(0, 5)).forEach(renderBusinessToInfoDiv))
@@ -121,7 +119,7 @@ let renderBusinessPage = (business) =>
         </ul>
     </div>`
 
-    if (currentUserId > 0)
+    if (currentUser.id > 0)
     {
         let pledgeFormDiv = document.querySelector('#pledge-form-div')
             pledgeFormDiv.innerHTML = 
@@ -150,7 +148,7 @@ let renderBusinessPage = (business) =>
               let investmentObj = {
                 amount: event.target.pledge.value,
                 business_id: id,
-                user_id: currentUserId,
+                user_id: currentUser.id,
                 description: event.target.description.value,
               };
 
@@ -223,18 +221,26 @@ moreBizBtn.addEventListener('click', evt => {
     toggleOff(showDiv)
     toggleOff(signUpForm)
 
-    fetch(`${businessesURL}`)
-    .then(response => response.json())
-    .then(businesses => businesses.forEach(renderAllBusinesses))
-    
+    // fetch(`${businessesURL}`)
+    // .then(response => response.json())
+    // .then(businesses => businesses.forEach(renderAllBusinesses))
+    fetchAllBusinesses()
+
     toggleOff(moreBizBtn)
     
 })
 
+let fetchAllBusinesses = () => {
+    
+    fetch(businessesURL)
+    .then(response => response.json())
+    .then(businesses => businesses.forEach(renderAllBusinesses))
+
+}
+
 // showMore
 
 signUpButton.addEventListener('click', event => {
-    event.preventDefault()
     
     toggleOff(businessInfoDiv)
     toggleOff(signUpButton)
@@ -273,7 +279,7 @@ signUpButton.addEventListener('click', event => {
     fetch(`${baseUrl}/users`, confObj)
       .then((response) => response.json())
       .then((data) => {
-          currentUserId = data.id
+          currentUser = data
           alert(`hello ${data.name}! thanks for signing up!`)
           toggleOn(businessInfoDiv);
           toggleOff(pledgeFormDiv)
@@ -317,20 +323,39 @@ signInButton.addEventListener("click", function (event) {
        },
        body: JSON.stringify(userObj),
      };
-        fetch(`${baseUrl}/users`, confObj)
-       .then((response) => response.json())
-       .then((data) => {
-         currentUserId = data.id;
 
-         alert(`hello ${data.name}! thanks for signing in!`);
-         toggleOn(businessInfoDiv);
+    fetch(`${baseUrl}/users/sign_in`, confObj)
+       .then(response => {response.json()})
+       .then(data => {
+            currentUser = data;
        });
    });
+   if (currentUser.id > 0){
+        alert(`hello ${currentUser.name}! thanks for signing in!`);
+        toggleOff(signInButton);
+        toggleOn(businessInfoDiv);
+    }
+   else
+   {
+       alert('email taken')
+   }
 });
 
-// lendLi.addEventListener('click', )
+lendLi.addEventListener('click', evt => {
+    
+    if (allBizDiv.children) {
+        toggleOn(allBizDiv)
+    }
+    else {
+        // debugger 
+        fetchAllBusinesses()
+    }
 
-fetchAllBusinesses(businessesURL);
+})
+
+
+
+fetch5Businesses(businessesURL);
 fetchInvestmentData(investmentsUrl);
 
 
