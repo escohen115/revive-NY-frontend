@@ -15,7 +15,7 @@ const signOutButton = document.querySelector("li#sign-out")
 const signUpForm = document.querySelector("#sign-up-form")
 const projectDescription = document.querySelector("#project-description")
 
-let currentUser = {}
+let currentUser = {id: -1}
 
 let numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -59,7 +59,7 @@ let fetchTotalInvestmentData = (url) => {
 let renderBusinessToInfoDiv = (business) => {
 
     // debugger 
-    toggleOff(investmentsLi)
+    //toggleOff(investmentsLi)
     let oneBizDiv = document.createElement('div')
     oneBizDiv.dataset.id = business.id
 
@@ -325,6 +325,7 @@ signUpButton.addEventListener("click", (event) => {
             toggleOn(businessInfoDiv)
             toggleOff(pledgeFormDiv)
             toggleOff(showDiv) 
+            toggleOn(signOutButton)
         }
         else 
         {
@@ -338,8 +339,8 @@ signInButton.addEventListener("click", function (event) {
     toggleOn(signUpButton)
     toggleOff(signInButton)
     toggleOff(businessInfoDiv)
+    toggleOn(showDiv)
     
-
     showDiv.innerHTML = 
     `<form id="sign-in-form">
 
@@ -387,6 +388,12 @@ signInButton.addEventListener("click", function (event) {
 
 lendLi.addEventListener('click', evt => {
     // businessInfoDiv.innerHTML= ''
+
+    if (signedIn(currentUser) === false)
+    {
+        toggleOn(signInButton)
+        toggleOn(signUpButton)
+    }
 
     toggleOn(allBizDiv)
     toggleOn(businessInfoDiv)
@@ -438,7 +445,6 @@ investmentsLi.addEventListener("click", (event) => {
     showDiv.innerHTML = ''
     toggleOff(projectDescription)
     toggleOff(businessInfoDiv)
-    toggleOff(investmentsLi)
     toggleOn(showDiv)
     
     h2 = document.createElement("h2")
@@ -454,7 +460,7 @@ investmentsLi.addEventListener("click", (event) => {
 })
 
 signOutButton.addEventListener('click', event => {
-    currentUser = {}
+    currentUser.id = -1
 
     alert("Signing out...")
     
@@ -470,6 +476,14 @@ let deleteBtn = document.createElement('button')
     deleteBtn.textContent = 'Delete your account'
 
 function signedIn (currentUser){
+    if (currentUser.id > 0 )
+    {
+        return true
+    }
+    else
+    {
+        return false
+    }
     
 }
 
