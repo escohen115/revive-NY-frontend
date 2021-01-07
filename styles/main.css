@@ -69,3 +69,9 @@ div#description { grid-area: 3 / 1 / 5 / 3; }
 div#investments { grid-area: 3 / 3 / 6 / 5; }
 
 div#more-info { grid-area: 5 / 1 / 6 / 3; }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
