@@ -36,11 +36,13 @@ READ
 Outstanding: 
 
 UPDATE
-1. Update the amount for an investment 
+1. Change the DOM after updating 
 
 DELETE 
 1. Delete account 
 
+Bugs
+1. The description for the investments isn't coming up properly 
 
 CSS
 1. Create another div that houses the progress bar so that you can make the width grey 

@@ -14,6 +14,11 @@ const investmentsLi = document.querySelector('li#investments')
 const signOutButton = document.querySelector("li#sign-out")
 const signUpForm = document.querySelector("#sign-up-form")
 const projectDescription = document.querySelector("#project-description")
+//renderOneInvestment
+const fetchHeaders = {
+    Accept: "application/json",
+     "Content-Type": "application/json",
+    }
 
 let currentUser = {id: -1}
 
@@ -23,7 +28,6 @@ let numberWithCommas = (x) => {
 
 let showPageFromListener = (event) => {
     
-    // debugger 
     if (event.target.matches('button.learn_more')) 
     {
         toggleOff(businessInfoDiv)
@@ -235,7 +239,6 @@ let renderAllBusinesses = (business) => {
     `
 
     let learnMoreBtn = document.querySelector('button.learn_more')
-    // debugger 
 
     // learnMoreBtn.addEventListener('click', () => console.log('clicked'))
 }
@@ -404,7 +407,6 @@ lendLi.addEventListener('click', evt => {
 
     // toggleOn(signInButton)
     // toggleOn(signUpButton)
-    
         
     // if (allBizDiv.children.length > 0) {
     //     toggleOn(allBizDiv)
@@ -419,26 +421,62 @@ lendLi.addEventListener('click', evt => {
 
 })
 
+let fetchUpdatedInvestment = (investmentConfigObj, id) => {
+    fetch(`${investmentsUrl}/${id}`, investmentConfigObj)
+        .then(r => r.json())
+        .then(investment => console.log(investment))
+}
+
+let updateInvestment = evt => {
+    evt.preventDefault()
+
+    investmentDescription = evt.target.description.value
+    investmentAmount = evt.target.amount.value
+    investmentId = evt.target.id
+//    console.log(evt.target.id)
+    let investmentFormObj = {
+        investment_id: investmentId,
+        description: investmentDescription,
+        amount: investmentAmount
+    }
+
+    let investmentConfigObj = {
+        method: 'PATCH', 
+        headers: fetchHeaders,
+        body: JSON.stringify(investmentFormObj)
+    }
+
+    fetchUpdatedInvestment(investmentConfigObj, investmentId)
+}
+
 let renderOneInvestment = (investment) => {
 
-
+ 
     newDiv = document.createElement('div')
+    newDiv.dataset.id = investment.id
+    let stringDescription = investment.description.toString()
+    
     newDiv.innerHTML = 
     
-    `<form id=${investment.id}>
+    `<h3>${investment.business.name}</h3>
+    <form id=${investment.id}>
 
         <label for="amount">Amount:</label>
         <input type="number" name="amount" value=${investment.amount}><br>
         
-        <label for="description>Description:</label>
-        <input type="text" name="description" value=${investment.description}>
+        <label for="description">Description:</label>
+        <input type="text" name="description" value=${stringDescription}>
         
         <button type="submit" value="submit">Update</button>
 
     </form>`
 
+
     investmentsDiv.append(newDiv)
-    
+
+    let updateInvestmentForm = document.querySelector("form#" + CSS.escape(investment.id))
+
+    updateInvestmentForm.addEventListener('submit', updateInvestment)
 }
 
 investmentsLi.addEventListener("click", (event) => {
@@ -447,12 +485,17 @@ investmentsLi.addEventListener("click", (event) => {
     toggleOff(businessInfoDiv)
     toggleOn(showDiv)
     
-    h2 = document.createElement("h2")
-    h2.textContent = "My Investments:"
+    let titleDiv = document.createElement('div')
+    titleDiv.id = 'investments-title'
+    let h2 = document.createElement("h2");
+    h2.textContent = "My Investments:";
+
+    titleDiv.append(h2)
 
     investmentsDiv = document.createElement('div')
+    investmentsDiv.id = 'investments'
 
-    showDiv.append(h2, investmentsDiv)
+    showDiv.append(titleDiv, investmentsDiv);
 
 //   fetchUserInvestments()
     currentUser.investments.forEach(renderOneInvestment)
