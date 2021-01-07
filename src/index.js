@@ -42,9 +42,9 @@ let showPageFromListener = (event) => {
 
 let fetchUserInvestments = () => {
 
-    fetch(`${userUrl}/investments`)
+    fetch(`${userUrl}/${currentUser.id}`)
         .then(r => r.json())
-        .then(investments => console.log(investments))
+        .then(user => user.investments.forEach(renderOneInvestment))
 }
 
 let fetch5Businesses = (url) => {
@@ -447,10 +447,15 @@ let updateInvestment = evt => {
     }
 
     fetchUpdatedInvestment(investmentConfigObj, investmentId)
+    // fetchUserInvestments()
 }
+
+
+
 
 let renderOneInvestment = (investment) => {
 
+    
  
     newDiv = document.createElement('div')
     newDiv.dataset.id = investment.id
@@ -468,16 +473,26 @@ let renderOneInvestment = (investment) => {
         <input type="text" name="description" value=${stringDescription}>
         
         <button type="submit" value="submit">Update</button>
+    </form>
+    `
+    let deleteButton = document.createElement("button")
+    deleteButton.textContent = "Delete"
 
-    </form>`
+    deleteButton.classList.add('delete-button')
+    deleteButton.dataset.id = investment.id
 
+    deleteButton.addEventListener('click', deleteInvestment)
 
+    newDiv.append(deleteButton)
     investmentsDiv.append(newDiv)
 
     let updateInvestmentForm = document.querySelector("form#" + CSS.escape(investment.id))
 
     updateInvestmentForm.addEventListener('submit', updateInvestment)
 }
+
+
+
 
 investmentsLi.addEventListener("click", (event) => {
     showDiv.innerHTML = ''
@@ -497,10 +512,13 @@ investmentsLi.addEventListener("click", (event) => {
 
     showDiv.append(titleDiv, investmentsDiv);
 
-//   fetchUserInvestments()
-    currentUser.investments.forEach(renderOneInvestment)
+    fetchUserInvestments()
+    // currentUser.investments.forEach(renderOneInvestment)
 
 })
+
+
+
 
 signOutButton.addEventListener('click', event => {
     currentUser.id = -1
@@ -513,10 +531,18 @@ signOutButton.addEventListener('click', event => {
     toggleOff(investmentsLi)
 })
 
+function deleteInvestment (event) {
 
-let deleteBtn = document.createElement('button')
-    deleteBtn.id = 'delete-user'
-    deleteBtn.textContent = 'Delete your account'
+    fetch(`${investmentsUrl}/${event.target.dataset.id}`, {
+    method: "DELETE",
+    })
+    debugger
+    event.target.parentElement.delete
+
+}
+
+
+
 
 function signedIn (currentUser){
     if (currentUser.id > 0 )
@@ -529,6 +555,7 @@ function signedIn (currentUser){
     }
     
 }
+
 
 
 // deleteBtn.addEventListener('click', evt )
