@@ -36,10 +36,10 @@ READ
 Outstanding: 
 
 UPDATE
-1. Change the DOM after updating 
+1. Change the DOM after updating -- Done 
 
 DELETE 
-1. Delete account 
+1. Delete investment -- Done  
 
 Bugs
 1. The description for the investments isn't coming up properly 
@@ -48,5 +48,9 @@ CSS
 1. Create another div that houses the progress bar so that you can make the width grey 
 
 2. 
+
+
+CHECKLIST
+1. View all investments 
 
 

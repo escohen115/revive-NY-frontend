@@ -205,9 +205,6 @@ let renderBusinessPage = (business) =>
     } else {
         progressBar.style.width = "100%"
     }
-
-    
-    
 }
 
 let toggleOn = (element) => {
@@ -280,7 +277,6 @@ let fetchAllBusinesses = () => {
 
 signUpButton.addEventListener("click", (event) => {
 
-
   toggleOff(businessInfoDiv)
   toggleOff(signUpButton)
   toggleOn(signInButton)
@@ -338,6 +334,9 @@ signUpButton.addEventListener("click", (event) => {
   })
 })
 
+
+
+
 signInButton.addEventListener("click", function (event) {
     toggleOn(signUpButton)
     toggleOff(signInButton)
@@ -377,17 +376,31 @@ signInButton.addEventListener("click", function (event) {
       .then((data) => {
         console.log(data)
         currentUser = data
-        alert(`hello ${currentUser.name}! thanks for signing in!`)
-        toggleOff(signInButton)
-        toggleOff(signUpButton)
-        toggleOn(businessInfoDiv)
-        toggleOn(signOutButton)
-        toggleOn(investmentsLi)
-        toggleOff(signInForm)
-        toggleOff(showDiv)
+        if (currentUser)
+        {
+            alert(`hello ${currentUser.name}! thanks for signing in!`)
+            toggleOff(signInButton)
+            toggleOff(signUpButton)
+            toggleOn(businessInfoDiv)
+            toggleOn(signOutButton)
+            toggleOn(investmentsLi)
+            toggleOff(signInForm)
+            toggleOff(showDiv)
+        }
+        else
+        {
+            alert('User not found. Please try again')
+        } 
       })
+    })
+
+
 })
-})
+
+
+
+
+
 
 lendLi.addEventListener('click', evt => {
     // businessInfoDiv.innerHTML= ''
@@ -470,7 +483,7 @@ let renderOneInvestment = (investment) => {
         <input type="number" name="amount" value=${investment.amount}><br>
         
         <label for="description">Description:</label>
-        <input type="text" name="description" value=${stringDescription}>
+        <input type="text" name="description" value='${stringDescription}'>
         
         <button type="submit" value="submit">Update</button>
     </form>
@@ -478,6 +491,7 @@ let renderOneInvestment = (investment) => {
     let deleteButton = document.createElement("button")
     deleteButton.textContent = "Delete"
 
+    // debu
     deleteButton.classList.add('delete-button')
     deleteButton.dataset.id = investment.id
 
@@ -485,6 +499,9 @@ let renderOneInvestment = (investment) => {
 
     newDiv.append(deleteButton)
     investmentsDiv.append(newDiv)
+
+    let formDescription = document.querySelectorAll('input')[1]
+    formDescription.value = stringDescription
 
     let updateInvestmentForm = document.querySelector("form#" + CSS.escape(investment.id))
 
@@ -519,25 +536,26 @@ investmentsLi.addEventListener("click", (event) => {
 
 
 
-
 signOutButton.addEventListener('click', event => {
+    if (confirm("Are you sure you'd like to sign out?") == true){ 
     currentUser.id = -1
-
-    alert("Signing out...")
-    
     toggleOff(signOutButton)
     toggleOn(signInButton)
     toggleOn(signUpButton)
     toggleOff(investmentsLi)
+    toggleOn(allBizDiv)
+    toggleOn(businessInfoDiv)
+    toggleOff(showDiv)
+    }
 })
 
 function deleteInvestment (event) {
-
+    if (confirm("Are you sure you'd like to delete this investment?") == true)
+{
     fetch(`${investmentsUrl}/${event.target.dataset.id}`, {
     method: "DELETE",
     })
-    debugger
-    event.target.parentElement.delete
+    event.target.parentElement.remove()}
 
 }
 
