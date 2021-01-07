@@ -109,17 +109,19 @@ let renderInvestmentToBusinessShow = investment => {
     let oneInvestmentDiv = document.createElement('div')
 
     let descriptionH4 = document.createElement('h4')
-    descriptionH4.textContent = `numberWithCommas(investment.amount)`
+    descriptionH4.textContent = `Investment amount: $${numberWithCommas(investment.amount)}`
 
     let descriptionP = document.createElement('p')
     descriptionP.textContent = investment.description
 
-    oneInvestmentDiv.append(descriptionH4, descriptionP)
+    let nameP = document.createElement('p')
+
+    oneInvestmentDiv.append(descriptionH4, descriptionP, nameP)
     allInvestmentsDiv.append(oneInvestmentDiv)
 
     fetch(`${userUrl}/${investment.userId}`)
         .then(r => r.json())
-        .then(user => user.name)
+        .then(user => nameP.textContent = `-From ${user.name} ❤️`)
 
 }
 
@@ -129,8 +131,9 @@ let renderBusinessPage = (business) =>
     toggleOn(showDiv)
     toggleOff(allBizDiv)
 
-    showDiv.innerHTML = 
-    `<div id="show-image"> 
+    showDiv.innerHTML =
+    `
+    <div id="show-image"> 
         <img  id="profile-image" src=${business.picture} alt=${business.name}>
     </div> 
     <div id="progress-status">
@@ -165,11 +168,12 @@ let renderBusinessPage = (business) =>
             <li> ${business.phoneNumber} </li>
             <li> ${business.website} </li>
         </ul>
-    </div>`
+    </div>
+    `
 
     let toGoH4 = document.querySelector('#to-go')
 
-    if (business.moneyMade > business.goal) {
+    if (business.moneyMade >= business.goal) {
         toGoH4.textContent = 'This business has reached its goal!'
     }
 
@@ -227,10 +231,11 @@ let renderBusinessPage = (business) =>
             
             
               fetch(`${investmentsUrl}`, confObj)
+              .then(response => response.json())
+              .then(data => experimentalFunctionCall(data.businessId))
             }
             event.target.reset()
-            experimentalFunctionCall(business)
-
+            
             })    
 
     } 
@@ -284,7 +289,7 @@ allBizDiv.addEventListener('click', showPageFromListener)
 
         
 moreBizBtn.addEventListener('click', evt => {
-    toggleOn(businessInfoDiv)
+    businessInfoDiv.innerHTML= ''
     toggleOff(showDiv)
     toggleOff(signUpForm)
 
@@ -507,7 +512,6 @@ let updateInvestment = evt => {
 
 let renderOneInvestment = (investment) => {
 
-    
  
     newDiv = document.createElement('div')
     newDiv.dataset.id = investment.id
@@ -627,8 +631,8 @@ fetch5Businesses(businessesURL)
 
 
 
-function experimentalFunctionCall (business){
-    fetch(`${businessesURL}/${business.id}`)
+function experimentalFunctionCall (businessId){
+    fetch(`${businessesURL}/${businessId}`)
     .then((response) => response.json())
     .then((business) => renderBusinessPage(business))
 }
