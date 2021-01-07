@@ -36,7 +36,7 @@ READ
 Outstanding: 
 
 UPDATE
-1. Update the amount for an investment 
+1. Change the DOM after updating 
 
 DELETE 
 1. Delete account 
