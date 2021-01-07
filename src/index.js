@@ -14,6 +14,8 @@ const investmentsLi = document.querySelector('li#investments')
 const signOutButton = document.querySelector("li#sign-out")
 const signUpForm = document.querySelector("#sign-up-form")
 const projectDescription = document.querySelector("#project-description")
+const logoLi = document.querySelector('li#logo') 
+
 //renderOneInvestment
 const fetchHeaders = {
     Accept: "application/json",
@@ -66,26 +68,32 @@ let renderBusinessToInfoDiv = (business) => {
     //toggleOff(investmentsLi)
     let oneBizDiv = document.createElement('div')
     oneBizDiv.dataset.id = business.id
+    oneBizDiv.classList.add('one-biz')
 
+    let imgDiv = document.createElement('div')
+    imgDiv.classList.add('one-biz-img')
 
-    imgDiv = document.createElement('div')
-    
-    oneBizImg = document.createElement('img')
+    let oneBizImg = document.createElement('img')
     oneBizImg.src = business.picture
     oneBizImg.alt = business.name
 
-    oneBizP = document.createElement('p')
+    let oneBizP = document.createElement('p')
     oneBizP.textContent = business.description
+    // oneBizDivP.classList.add('biz-p')
 
-    oneBizH4 = document.createElement('h4')
+    let oneBizH4 = document.createElement('h4')
     oneBizH4.textContent = business.name
 
-    oneBizBtn = document.createElement('button')
+    let oneBizBtn = document.createElement('button')
     oneBizBtn.classList.add('learn_more') 
     oneBizBtn.innerText = 'Learn More'
 
+    let wordsDiv = document.createElement('div')
+    wordsDiv.classList.add('words')
+
     imgDiv.append(oneBizImg)
-    oneBizDiv.append(imgDiv, oneBizH4, oneBizP, oneBizBtn)
+    wordsDiv.append(oneBizH4, oneBizP)
+    oneBizDiv.append(imgDiv, wordsDiv, oneBizBtn)
     businessInfoDiv.append(oneBizDiv)
 }
 
@@ -276,6 +284,7 @@ let fetchAllBusinesses = () => {
 // showMore
 
 signUpButton.addEventListener("click", (event) => {
+    event.preventDefault()
 
   toggleOff(businessInfoDiv)
   toggleOff(signUpButton)
@@ -338,6 +347,7 @@ signUpButton.addEventListener("click", (event) => {
 
 
 signInButton.addEventListener("click", function (event) {
+    event.preventDefault()
     toggleOn(signUpButton)
     toggleOff(signInButton)
     toggleOff(businessInfoDiv)
@@ -402,8 +412,19 @@ signInButton.addEventListener("click", function (event) {
 
 
 
-lendLi.addEventListener('click', evt => {
-    // businessInfoDiv.innerHTML= ''
+lendLi.addEventListener('click', function(event)  {
+    lendAndLogoEvent (event)
+})
+
+logoLi.addEventListener('click', function(event)  {
+    lendAndLogoEvent (event)
+})
+
+
+
+
+function lendAndLogoEvent (event) {
+    event.preventDefault()
 
     if (signedIn(currentUser) === false)
     {
@@ -414,25 +435,11 @@ lendLi.addEventListener('click', evt => {
     toggleOn(allBizDiv)
     toggleOn(businessInfoDiv)
     toggleOff(showDiv)
-
-
     fetch5Businesses(businessesURL)
 
-    // toggleOn(signInButton)
-    // toggleOn(signUpButton)
-        
-    // if (allBizDiv.children.length > 0) {
-    //     toggleOn(allBizDiv)
-    //     toggleOff(businessInfoDiv)
-    // }
-    // else 
-    // {
-    //     toggleOff(showDiv)
-    //     fetchAllBusinesses()
-    //     toggleOn(allBizDiv)
-    // }
+}
 
-})
+
 
 let fetchUpdatedInvestment = (investmentConfigObj, id) => {
     fetch(`${investmentsUrl}/${id}`, investmentConfigObj)
@@ -512,6 +519,7 @@ let renderOneInvestment = (investment) => {
 
 
 investmentsLi.addEventListener("click", (event) => {
+    event.preventDefault()
     showDiv.innerHTML = ''
     toggleOff(projectDescription)
     toggleOff(businessInfoDiv)
