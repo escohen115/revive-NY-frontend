@@ -62,6 +62,7 @@ let fetchTotalInvestmentData = (url) => {
 }
 
 
+
 let renderBusinessToInfoDiv = (business) => {
 
     // debugger 
@@ -100,23 +101,33 @@ let renderBusinessToInfoDiv = (business) => {
 businessInfoDiv.addEventListener('click', showPageFromListener)
 
 
+let renderInvestmentToBusinessShow = investment => {
+    // debugger 
 
+    let allInvestmentsDiv = document.querySelector('div#investments')
+
+    let oneInvestmentDiv = document.createElement('div')
+
+    let descriptionH4 = document.createElement('h4')
+    descriptionH4.textContent = `numberWithCommas(investment.amount)`
+
+    let descriptionP = document.createElement('p')
+    descriptionP.textContent = investment.description
+
+    oneInvestmentDiv.append(descriptionH4, descriptionP)
+    allInvestmentsDiv.append(oneInvestmentDiv)
+
+    fetch(`${userUrl}/${investment.userId}`)
+        .then(r => r.json())
+        .then(user => user.name)
+
+}
 
 let renderBusinessPage = (business) => 
 {
-    
+    toggleOff(projectDescription)
     toggleOn(showDiv)
     toggleOff(allBizDiv)
-
-    // let name = document.createElement('h1')
-    // name.textContent = business.name
-
-    // let imgDiv = document.createElement('div')
-    // let picture = document.createElement('img') 
-    // picture.src = business.picture
-
-    // showDiv.append(name)
-    // showDiv.append(picture)
 
     showDiv.innerHTML = 
     `<div id="show-image"> 
@@ -124,9 +135,14 @@ let renderBusinessPage = (business) =>
     </div> 
     <div id="progress-status">
         <h2>$${numberWithCommas(business.goal)} Goal</h2>
-        <h3>${Math.round(business.percentFunded)} Percent funded<h3>
-        <div id='progress-bar'> </div>
-        <h4>$${numberWithCommas(business.moneyMade)} raised</h4>
+        <h3>$${numberWithCommas(business.moneyMade)} raised</h3>
+        
+        <div id='progress-holder'>
+            <div id='progress-bar'> </div>
+        </div>
+        <h4>${Math.round(business.percentFunded)}% funded<h4>
+
+        <h4 id='to-go'>$${numberWithCommas(business.goal - business.moneyMade)} to go.</h4>
     </div> 
     <div id="invest"> 
         <h2>${business.name}</h2>
@@ -141,7 +157,7 @@ let renderBusinessPage = (business) =>
         <p>${business.description}</p> 
     </div> 
     <div id="investments"> 
-        
+
     </div> 
     <div id="more-info">
         <ul id='contact-list'> 
@@ -150,6 +166,12 @@ let renderBusinessPage = (business) =>
             <li> ${business.website} </li>
         </ul>
     </div>`
+
+    let toGoH4 = document.querySelector('#to-go')
+
+    if (business.moneyMade > business.goal) {
+        toGoH4.textContent = 'This business has reached its goal!'
+    }
 
     if (currentUser.id > 0)
     {
@@ -176,10 +198,16 @@ let renderBusinessPage = (business) =>
               event.preventDefault()
 
               let id = event.target.dataset.id
+              //debugger
             if (event.target.pledge.value == 0) {
                 alert('Amount must be more than zero!')
             }
-            else  {
+            else if (event.target.pledge.value > (business.goal - business.moneyMade))
+            {
+                alert('Amount may not exceed remaining goal')
+            }
+            else  
+            {
                 alert('Thank you for your donation!')
                 let investmentObj = {
                     amount: event.target.pledge.value,
@@ -201,6 +229,8 @@ let renderBusinessPage = (business) =>
               fetch(`${investmentsUrl}`, confObj)
             }
             event.target.reset()
+            experimentalFunctionCall(business)
+
             })    
 
     } 
@@ -213,6 +243,8 @@ let renderBusinessPage = (business) =>
     } else {
         progressBar.style.width = "100%"
     }
+
+    business.investments.forEach(renderInvestmentToBusinessShow)
 }
 
 let toggleOn = (element) => {
@@ -431,7 +463,7 @@ function lendAndLogoEvent (event) {
         toggleOn(signInButton)
         toggleOn(signUpButton)
     }
-
+    toggleOn(projectDescription)
     toggleOn(allBizDiv)
     toggleOn(businessInfoDiv)
     toggleOff(showDiv)
@@ -595,5 +627,15 @@ fetch5Businesses(businessesURL)
 
 
 
+function experimentalFunctionCall (business){
+    fetch(`${businessesURL}/${business.id}`)
+    .then((response) => response.json())
+    .then((business) => renderBusinessPage(business))
+}
 
 
+
+
+
+
+      
