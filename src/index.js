@@ -271,7 +271,7 @@ let renderAllBusinesses = (business) => {
     toggleOff(businessInfoDiv)
 
     allBizDiv.innerHTML += 
-    `<div class=''ndividual data-id=${business.id}>
+    `<div class='individual' data-id=${business.id}>
         <div class='all-biz-img' data-id=${business.id}>
             <img src=${business.picture} alt=${business.name}>
         </div>  
@@ -450,7 +450,8 @@ signInButton.addEventListener("click", function (event) {
             toggleOn(investmentsLi)
             toggleOff(signInForm)
 
-            toggleOn(businessInfoDiv)            
+            toggleOn(businessInfoDiv) 
+            businessInfoDiv.style.display = 'inline-flex'           
             toggleOff(showDiv)
         }
         else
@@ -537,13 +538,14 @@ let updateInvestment = evt => {
 
 let renderOneInvestment = (investment) => {
 
- 
+    // debugger 
+
     newDiv = document.createElement('div')
     newDiv.dataset.id = investment.id
     let stringDescription = investment.description.toString()
     
+
     newDiv.innerHTML = 
-    
     `<h3>${investment.business.name}</h3>
     <form id=${investment.id}>
 
@@ -574,6 +576,11 @@ let renderOneInvestment = (investment) => {
     let updateInvestmentForm = document.querySelector("form#" + CSS.escape(investment.id))
 
     updateInvestmentForm.addEventListener('submit', updateInvestment)
+    
+    // else {
+    //     newDiv.innerHTML = 
+    //     `<h2>You have no investments yet!<h2>`
+    // }
 }
 
 

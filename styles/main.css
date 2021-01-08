@@ -17,6 +17,11 @@ div.words > * {
  padding-left: 20px;
 }
 
+div#all-biz-div > * {
+padding-left: 10px;
+/* background-color: white; */
+}
+
 button.learn_more {
   margin: 0px 20px;
   display: block;
@@ -48,8 +53,8 @@ div.one-biz{
 } */
 
 div#progress-holder{
-  width: 100%;
-  background-color: #f2f2f2;
+  width: 95%;
+  background-color: #8c8c8c;
 }
 
 #progress-bar {
@@ -164,7 +169,7 @@ li:first-child a:hover{
   background-color: darkgrey;
 }
 
-.parent {
+div#all-biz-div {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
 grid-template-rows: repeat(5, 1fr);
