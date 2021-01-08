@@ -271,7 +271,7 @@ let renderAllBusinesses = (business) => {
     toggleOff(businessInfoDiv)
 
     allBizDiv.innerHTML += 
-    `<div class=''ndividual data-id=${business.id}>
+    `<div class='individual' data-id=${business.id}>
         <div class='all-biz-img' data-id=${business.id}>
             <img src=${business.picture} alt=${business.name}>
         </div>  
