@@ -125,6 +125,14 @@ div#investments {
 /* div6 */
 div#more-info { grid-area: 5 / 1 / 6 / 3; }
 
+div#investments-title {
+  grid-area: 1 / 1 / 2 / 5;
+}
+
+div#investments-container {
+  grid-area: 2 / 1 / 6 / 5;
+}
+
 ul {
   list-style-type: none;
   margin: 0;
@@ -177,6 +185,10 @@ grid-column-gap: 0px;
 grid-row-gap: 0px;
 padding: 14px 16px;
 
+}
+
+ul#contact-list {
+  background-color: white;
 }
 
 /* div {

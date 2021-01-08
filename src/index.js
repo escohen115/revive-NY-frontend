@@ -283,6 +283,7 @@ let renderAllBusinesses = (business) => {
 
     let learnMoreBtn = document.querySelector('button.learn_more')
 
+    allBizDiv.style.display = 'grid'
     // learnMoreBtn.addEventListener('click', () => console.log('clicked'))
 }
 
@@ -482,6 +483,7 @@ let lendAndLogoEvent = (event) => {
 
     if (allBizDiv.children.length > 0 && allBizDiv.children.length <= 15) {
      toggleOn(allBizDiv)
+     allBizDiv.style.display = 'grid'
     } 
     else 
     {
@@ -602,7 +604,7 @@ investmentsLi.addEventListener("click", (event) => {
     titleDiv.append(h2)
 
     investmentsDiv = document.createElement('div')
-    investmentsDiv.id = 'investments'
+    investmentsDiv.id = 'investments-container'
 
     showDiv.append(titleDiv, investmentsDiv);
 
