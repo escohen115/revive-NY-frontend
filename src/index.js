@@ -16,6 +16,7 @@ const signUpForm = document.querySelector("#sign-up-form")
 const projectDescription = document.querySelector("#project-description")
 const logoLi = document.querySelector('li#logo') 
 
+
 //renderOneInvestment
 const fetchHeaders = {
     Accept: "application/json",
@@ -270,8 +271,8 @@ let renderAllBusinesses = (business) => {
     toggleOff(businessInfoDiv)
 
     allBizDiv.innerHTML += 
-    `<div data-id=${business.id}>
-        <div data-id=${business.id}>
+    `<div class=''ndividual data-id=${business.id}>
+        <div class='all-biz-img' data-id=${business.id}>
             <img src=${business.picture} alt=${business.name}>
         </div>  
         <h4>${business.name}</h4>
@@ -289,7 +290,7 @@ allBizDiv.addEventListener('click', showPageFromListener)
 
         
 moreBizBtn.addEventListener('click', evt => {
-    businessInfoDiv.innerHTML= ''
+    // businessInfoDiv.innerHTML= ''
     toggleOff(showDiv)
     toggleOff(signUpForm)
 
@@ -364,13 +365,25 @@ signUpButton.addEventListener("click", (event) => {
         if (currentUser.status != 422) {
             alert(`hello ${currentUser.name}! thanks for signing up!`)
             toggleOff(signInButton)
-            toggleOn(businessInfoDiv)
             toggleOn(investmentsLi)
-            toggleOff(showDiv)
-            toggleOn(businessInfoDiv)
-            toggleOff(pledgeFormDiv)
+            
+            
+            // toggleOff(pledgeFormDiv)
+
             toggleOff(showDiv) 
             toggleOn(signOutButton)
+
+            fetch5Businesses(businessesURL)
+
+            // toggleOff(allBizDiv)
+            // toggleOn(businessInfoDiv)
+            // toggleOff(showDiv)
+
+
+    // toggleOn(allBizDiv)
+    // toggleOn(businessInfoDiv)
+    // toggleOff(showDiv)
+
         }
         else 
         {
@@ -389,6 +402,7 @@ signInButton.addEventListener("click", function (event) {
     toggleOff(signInButton)
     toggleOff(businessInfoDiv)
     toggleOn(showDiv)
+    toggleOff(allBizDiv)
     
     showDiv.innerHTML = 
     `<form id="sign-in-form">
@@ -402,7 +416,11 @@ signInButton.addEventListener("click", function (event) {
 
     let signInForm = document.querySelector("#sign-in-form")
     signInForm.addEventListener("submit", (event) => {
+
+   //  lendAndLogoEvent(event)
+
     event.preventDefault()
+
 
     let userObj = {
     name: event.target.name.value,
@@ -428,10 +446,11 @@ signInButton.addEventListener("click", function (event) {
             alert(`hello ${currentUser.name}! thanks for signing in!`)
             toggleOff(signInButton)
             toggleOff(signUpButton)
-            toggleOn(businessInfoDiv)
             toggleOn(signOutButton)
             toggleOn(investmentsLi)
             toggleOff(signInForm)
+
+            toggleOn(businessInfoDiv)            
             toggleOff(showDiv)
         }
         else
@@ -444,14 +463,34 @@ signInButton.addEventListener("click", function (event) {
 
 })
 
+let lendAndLogoEvent = (event) => {
+    event.preventDefault()
+
+    if (signedIn(currentUser) === false)
+    {
+        toggleOn(signInButton)
+        toggleOn(signUpButton)
+    }
+
+    toggleOn(projectDescription)
+    
+    toggleOff(showDiv)
+    toggleOff(businessInfoDiv)
+
+    toggleOn(allBizDiv)
+
+    if (allBizDiv.children.length > 0 && allBizDiv.children.length <= 15) {
+     toggleOn(allBizDiv)
+    } 
+    else 
+    {
+    fetchAllBusinesses()
+    }  // fetch5Businesses(bus(bsinessesURL)
+
+}
 
 
-
-
-
-lendLi.addEventListener('click', function(event)  {
-    lendAndLogoEvent (event)
-})
+lendLi.addEventListener('click', lendAndLogoEvent)
 
 logoLi.addEventListener('click', function(event)  {
     lendAndLogoEvent (event)
@@ -460,21 +499,7 @@ logoLi.addEventListener('click', function(event)  {
 
 
 
-function lendAndLogoEvent (event) {
-    event.preventDefault()
 
-    if (signedIn(currentUser) === false)
-    {
-        toggleOn(signInButton)
-        toggleOn(signUpButton)
-    }
-    toggleOn(projectDescription)
-    toggleOn(allBizDiv)
-    toggleOn(businessInfoDiv)
-    toggleOff(showDiv)
-    fetch5Businesses(businessesURL)
-
-}
 
 
 
@@ -560,6 +585,7 @@ investmentsLi.addEventListener("click", (event) => {
     toggleOff(projectDescription)
     toggleOff(businessInfoDiv)
     toggleOn(showDiv)
+    toggleOff(allBizDiv)
     
     let titleDiv = document.createElement('div')
     titleDiv.id = 'investments-title'
@@ -605,7 +631,6 @@ function deleteInvestment (event) {
 
 
 
-
 function signedIn (currentUser){
     if (currentUser.id > 0 )
     {
@@ -638,8 +663,3 @@ function experimentalFunctionCall (businessId){
 }
 
 
-
-
-
-
-      
