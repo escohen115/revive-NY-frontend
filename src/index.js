@@ -193,7 +193,7 @@ let renderBusinessPage = (business) =>
                 <input type="text" id="pledge" name="pledge"><br>
 
 
-                <button type="submit" value = "Submit">Pledge</button>
+                <button type="submit" class='pledge-button' value = "Submit">Pledge</button>
 
             </form>
             `
@@ -368,13 +368,14 @@ signUpButton.addEventListener("click", (event) => {
             toggleOff(signInButton)
             toggleOn(investmentsLi)
             
-            
+            toggleOn(businessInfoDiv)
+            businessInfoDiv.style.display = 'inline-flex'           
             // toggleOff(pledgeFormDiv)
 
             toggleOff(showDiv) 
             toggleOn(signOutButton)
 
-            fetch5Businesses(businessesURL)
+            // fetch5Businesses(businessesURL)
 
             // toggleOff(allBizDiv)
             // toggleOn(businessInfoDiv)
@@ -557,7 +558,7 @@ let renderOneInvestment = (investment) => {
         <label for="description">Description:</label>
         <input type="text" name="description" value='${stringDescription}'>
         
-        <button type="submit" value="submit">Update</button>
+        <button class='update-button' type="submit" value="submit">Update</button>
     </form>
     `
     let deleteButton = document.createElement("button")
@@ -599,7 +600,7 @@ investmentsLi.addEventListener("click", (event) => {
     let titleDiv = document.createElement('div')
     titleDiv.id = 'investments-title'
     let h2 = document.createElement("h2");
-    h2.textContent = "My Investments:";
+    h2.textContent = `${currentUser.name}'s investments:`;
 
     titleDiv.append(h2)
 

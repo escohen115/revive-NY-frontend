@@ -2,12 +2,15 @@
 
 body {
   background-color:#fdfdfd;
+  font-family: 'Courier New';
+  padding: 30px;
 }
+
 
 button {
   text-transform: uppercase;
   outline: 0;
-  background: #4CAF50;
+  background: #b1cbbb;
   width: 70%;
   border: 0;
   padding: 15px;
@@ -17,12 +20,42 @@ button {
   transition: all 0.3 ease;
   cursor: pointer;
   border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+button.delete-button{
+  width: 10%;
+  /* text-align: center; */
+  /* padding: 5px; */
+}
+
+button.update-button{
+  width: 10%;
+}
+
+button.pledge-button{
+  width: 10%
+}
+
+
+
+
+button:hover {
+  background: #9bafa2; 
 }
 
 button#more-biz-btn{
- width: 20%
+  width: 10%;
+  background: #f7cac9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
 }
 
+button#more-biz-btn:hover {
+  background: #cfabab;
+}
 
 img {
   width: 100%;
@@ -38,6 +71,8 @@ div.words > * {
 
 div#all-biz-div > * {
 padding-left: 10px;
+margin: 10px 10px;
+background-color: #f7f2f2f8;
 /* background-color: white; */
 }
 
@@ -91,9 +126,13 @@ div#progress-holder{
   margin-top: 20px;
 } 
 div#show-div > * {
-  background-color: white ; 
+  background-color: #f7f2f2f8;
   padding-left: 20px;
 }
+
+/* div.individual {
+  margin: 10px, 10px;
+} */
 
 /* div1 */
 div#show-image {
@@ -152,6 +191,10 @@ div#investments-container {
   grid-area: 2 / 1 / 6 / 5;
 }
 
+/* div#investments-continer button {
+  width: 20%
+} */
+
 ul {
   list-style-type: none;
   margin: 0;
@@ -159,13 +202,10 @@ ul {
   overflow: hidden;
   background-color: none;
 
- 
-
 }
 
 li {
   float: left;
-
 }
 
 li a {
@@ -176,9 +216,17 @@ li a {
   text-decoration: none;
 }
 
+a.active.right{
+  border-top-right-radius:20px;
+  border-bottom-right-radius:20px;  
+
+  border-top-left-radius:20px;
+  border-bottom-left-radius:20px;   
+}
+
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-  background-color: rgb(39, 160, 39);
+  background-color: #8295b9;
 }
 
 li {
@@ -195,17 +243,15 @@ li:first-child {
 }
 
 .active {
-  background-color: #4CAF50;
+  background-color: #92a8d1;
 }
 .logo{
-  background-color: rgb(168, 168, 168);
-  border-top-right-radius:30px;
-  border-bottom-right-radius:30px;  
+  background-color: #92a8d1;
 
-}
-
-li:first-child a:hover{
-  background-color: darkgrey;
+  border-top-right-radius:20px;
+  border-bottom-right-radius:20px;  
+  border-top-left-radius:20px;
+  border-bottom-left-radius:20px;   
 }
 
 div#all-biz-div {
@@ -219,17 +265,9 @@ padding: 14px 16px;
 }
 
 ul#contact-list {
-  background-color: white;
+  background-color: #f7f2f2f8;
 }
 
-
-
-.nav-borderb {
-border-top-right-radius:30px;
-border-bottom-right-radius:30px;  
-} 
-
-.nav-bordera {
-border-top-left-radius:30px;
-border-bottom-left-radius:30px;   
+ul#contact-list > * {
+  float: none;
 }
