@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:3000/api/v1"
+const baseUrl = "https://shrouded-fortress-01276.herokuapp.com/api/v1"
 const businessesURL = `${baseUrl}/businesses`
 const investmentsUrl = `${baseUrl}/investments`
 const userUrl = `${baseUrl}/users`
